@@ -1,0 +1,141 @@
+module.exports = router;
+
+
+*routes/songs.js*
+
+const express = require('express');
+const router = express.Router();
+const Song = require('../models/Song');
+
+router.get('/', async (req, res) => {
+  try {
+    const songs = await Song.find();
+    res.send(songs);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const song = new Song(req.body);
+    await song.save();
+    res.send(song);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+module.exports = router;
+
+
+*routes/playlists.js*
+
+const express = require('express');
+const router = express.Router();
+const Playlist = require('../models/Playlist');
+
+router.get('/', async (req, res) => {
+  try {
+    const playlists = await Playlist.find();
+    res.send(playlists);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const playlist = new Playlist(req.body);
+    await playlist.save();
+    res.send(playlist);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+module.exports = router;
+
+
+*models/User.js*
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+  name: String
+});
+
+userSchema.methods.comparePassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+
+
+*models/Song.js*
+
+const mongoose = require('mongoose');
+
+const songSchema = new mongoose.Schema({
+  title: String,
+  artist: String,
+  album: String,
+  duration: Number
+});
+
+const Song = mongoose.model('Song', songSchema);
+
+module.exports = Song;
+
+
+*models/Playlist.js*
+
+const mongoose = require('mongoose');
+
+const playlistSchema = new mongoose.Schema({
+  name: String,
+  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }]
+});
+
+const Playlist = mongoose.model('Playlist', playlistSchema);
+
+module.exports = Playlist;
+
+
+# Frontend (React)
+*App.js*
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function App() {
+  const [users, setUsers] = useState([]);
+  const [songs, setSongs] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/users')
+      .then(response => {
+        setUsers(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/songs')
+      .then(response => {
+        setSongs(response.data);
+      })
+      .catch(error
+
+
+
+
+  
